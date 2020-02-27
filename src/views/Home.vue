@@ -106,7 +106,6 @@ export default {
       this.$set(this.datas, index, num);
     },
     active() {
-      console.log(event.keyCode);
       this.data = [...this.datas];
 
       if (!this.datas) {
