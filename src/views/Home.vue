@@ -3,9 +3,10 @@
     <button type="text" v-on:keydown="active">
       <div class="big-box">
         <div
-          :class="['box', datas[index]==0?'':'box1',datas[index]<=2?'':'box2', datas[index]<=4?'':'box3', datas[index]<=8?'':'box4', datas[index]<=16?'':'box5', datas[index]<=32?'':'box6']"
+          class="box"
           v-for="(item, index) in boxs"
           :key="index"
+          v-getclass="datas[index]"
         >{{datas[index]==0?'':datas[index]}}</div>
       </div>
     </button>
@@ -50,36 +51,36 @@
   font-size: 60px;
   font-weight: 700;
 }
-.box1 {
+.box2 {
   background-color: #eee4da;
 
   color: white;
 }
-.box2 {
+.box4 {
   background-color: #ede0c8;
 
   color: white;
 }
-.box3 {
+.box8 {
   background-color: #f2b179;
 
   color: white;
 }
-.box4 {
+.box16 {
   background-color: #f59563;
   color: white;
 }
-.box5 {
+.box32 {
   background-color: #f67c5f;
   color: white;
 }
-.box6 {
+.box64 {
   background-color: #f65e3b;
   color: white;
 }
-button{
+button {
   padding: 0;
-    border-width: 0;
+  border-width: 0;
 }
 </style>
 
@@ -88,13 +89,24 @@ export default {
   data() {
     return {
       boxs: 16,
-      classname: "minbox",
-      datas: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      data: []
+      datas: []
     };
+  },
+  directives: {
+    getclass(el, b) {
+      el.classList.remove(el.classList[1]);
+      if (b.value != 0) {
+        el.classList.add("box" + b.value);
+      }
+    }
   },
   methods: {
     setbox() {
+      if(!this.datas.length){
+        for (let index = 0; index < this.boxs; index++) {
+          this.datas.push(0);
+        }
+      }
       let index = Math.floor(Math.random() * 16);
       while (this.datas[index] != 0) {
         index = Math.floor(Math.random() * 16);
@@ -107,7 +119,6 @@ export default {
     },
     active() {
       this.data = [...this.datas];
-
       if (!this.datas) {
         return;
       }
@@ -135,7 +146,6 @@ export default {
             if (this.datas[x + 4] != 0 && this.datas[x + 4] != this.datas[x]) {
               break;
             }
-
             if (this.datas[x] == this.datas[x + 4]) {
               this.$set(this.datas, x + 4, this.datas[x] + this.datas[x + 4]);
               this.$set(this.datas, x, 0);
@@ -271,7 +281,6 @@ export default {
           }
         }
       }
-
       let res = this.datas.every((ele, i) => ele == this.data[i]);
       if (res) {
         return;
@@ -280,7 +289,7 @@ export default {
       }
     }
   },
-  mounted() {
+  created() {
     this.setbox();
   }
 };
